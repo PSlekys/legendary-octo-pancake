@@ -7,6 +7,7 @@ app.use(bp.json());
 app.use(cors());
 
 const users = [];
+const books = [];
 
 app.post("/register", (req, res) => {
   const randomId = Math.floor(Math.random() * 100000 + 1);
@@ -41,7 +42,28 @@ app.post("/login", (req, res) => {
       res.send({ status: "Wrong email or password" });
     }
   } else {
-    res.send({ status: "Data not passed" });
+    res.status(400).send({ status: "Data not passed" });
+  }
+});
+
+app.get("/:id", (req, res) => {
+  if (req.params.id) {
+    res.send(books.filter((v) => v.userid === Number(req.params.id)));
+  } else {
+    res.status(400).send({ status: "Data not passed" });
+  }
+});
+
+app.post("/add", (req, res) => {
+  if (req.body.userid && req.body.author && req.body.title) {
+    books.push({
+      userid: req.body.userid,
+      author: req.body.author,
+      title: req.body.title,
+    });
+    res.send({ status: "Book added - OK" });
+  } else {
+    res.status(400).send({ status: "Data not passed" });
   }
 });
 
